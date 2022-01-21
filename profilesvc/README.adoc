@@ -1,0 +1,2 @@
+to use swagger gen
+`java -jar \bin\swagger-codegen-cli.jar generate -i profile-v2.yml -l python -o ../profilev2_client`

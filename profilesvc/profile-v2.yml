@@ -1,0 +1,1690 @@
+﻿swagger: '2.0'
+basePath: /connect/profile
+info:
+  title: Using the Connect Profile API
+  version: '2'
+  contact:
+    name: HSDP Support Operations
+    url: 'https://www.hsdp.io/support'
+  termsOfService: 'https://www.hsdp.io/legal'
+  description: >
+    This API provides role-based access to create, read, and search profiles.
+    
+    In addition, this API provides the ability to update specific profile
+    attributes as needed.
+
+
+    Intended usage of this API is to search, get, and update (limited properties
+    of)  profiles.
+
+
+    **Profile.** The Profile resource contains characteristics from the MDM Type
+    Hierarchy, as well as custom attributes, IAM attributes, firmware information 
+    and connection status.
+
+
+    basePath: /connect/profile
+
+    **Note: basepath root varies by HSDP region.**
+
+
+    Service: Connect - Profile
+
+    Schemes: https
+parameters:
+  ContentType:
+    name: Content-Type
+    in: header
+    description: |
+      Request type `application/json`
+    required: false
+    type: string
+  Accept:
+    name: Accept
+    in: header
+    description: |
+      Response type `application/json`
+    required: false
+    type: string
+  APIVersion:
+    name: API-Version
+    in: header
+    description: |
+      API Version. Supported Version: `2`
+    required: true
+    type: integer
+  Authorization:
+    name: Authorization
+    in: header
+    description: >
+      Authorization header that protects the resource from unauthorized access.
+      An OAuth2 access token need to be passed.
+    required: true
+    type: string
+  If-match:
+    description: >
+      Specify the latest version of the resource, in the format of W/{versionId}
+    name: If-Match
+    in: header
+    type: string
+    required: true
+  _id:
+    name: _id
+    in: query
+    description: |
+      ID of the object to fetch.
+    required: false
+    type: string
+responses:
+  '201':
+    description: >
+      CREATED HTTP status code.  The server has successfully created the new 
+      resource based on the input POST body.
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+  '204':
+    description: >
+      __No Content.__ The server has successfully fulfilled the request and that
+      that there is no additional content to send in the response body.
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+    schema:
+        $ref: '#/definitions/OperationOutcome'
+  '400':
+    description: >
+      __Bad request.__ The resource could not be parsed or failed basic
+      validation rules.
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+  '401':
+    description: |
+      __Unauthorized.__ The request requires authentication.
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+  '403':
+    description: |
+      __Forbidden.__ The provided credentials do not allow for operation.
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+  '404':
+    description: |
+      __Not Found.__ The requested resource could not be found.
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+  '405':
+    description: >
+      __Method Not Allowed.__ The method specified for the request is not
+      allowed.
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+    schema:
+        $ref: '#/definitions/OperationOutcome'
+  '406':
+    description: >
+      __Not Acceptable.__ The resource identified by the request is only capable
+      of generating response entities which have content characteristics not
+      acceptable according to the accept headers sent in the request.
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+  '409':
+    description: >
+      __Conflict__. The request could not be completed due to a conflict with
+      the current state of the resource.
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+  '412':
+    description: |
+      __Pre-condition failed.__
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+  '415':
+    description: >
+      __Unsupported Media Type.__ The request entity has a media type which the
+      server or resource does not support.
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+  '422':
+    description: >
+      __Unprocessable-entity.__ The request could not be completed due to a business
+      rule violation.
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+  '500':
+    description: >
+      __Internal Server Error.__ The server encountered an unexpected condition
+      which prevented it from fulfilling the request.
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+  '504':
+    description: >
+      __Upstream Server Error.__ The service did not get a timely response from the 
+      upstream server in order to complete the request.
+    schema:
+      $ref: '#/definitions/OperationOutcome'
+    headers:
+      api-version:
+        type: integer
+      content-type:
+        type: string
+      content-length:
+        type: integer
+        format: long
+      transactionId:
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        description: optional
+paths:
+  /connect/profile/Profile:
+    post:
+      summary: Create new profile
+      description: |
+        Create new profile during provisioning or similar workflow.
+      tags:
+        - Profile
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/ContentType'
+        - $ref: '#/parameters/Accept'
+        - $ref: '#/parameters/APIVersion'
+        - $ref: '#/parameters/Authorization'
+        - name: body
+          description: >
+            The resource to add.
+
+            ```
+              {
+                  "resourceType": "Profile",
+                  "serialNo": "s-1234",
+                  "HSDPId": "bee2965b-e015-4da8-8903-8759cb8e36dc",
+                  "loginId": "663967d9-4f35-4d6c-95c2-11ce395853f3",
+                  "identityType": "device",
+                  "propositionName": "myPropName",
+                  "propositionGuid": "b6c821f2-71dd-4e9d-9a93-ff1b6f726ca4",
+                  "applicationName": "myAppName",
+                  "applicationGuid": "c480533f-17be-4444-99a5-75ee29047b65",
+                  "oAuthClientId": "c1a3c6d9-c92e-4a68-b73d-e8f17f0580b3",
+                  "oAuthClientName": "myOAuthClientName",
+                  "deviceGroupId": "325e4d8a-a434-4a9f-b036-3dbab0a7912e",
+                  "deviceGroupName": "myDeviceGroupName",
+                  "deviceTypeId": "8d3f54ef-9f4d-4350-be01-a8f40b5da82f",
+                  "deviceTypeName": "myDeviceType",
+                  "identitySignature": "eyJhbGciOiJSUzbE+badzf3RfEvBBvO7QQ==",
+                  "producingOrgGuid": "149c80bb-7cb2-4b91-85df-ff2e01449a2e",
+                  "consumingOrgGuid": "149c80bb-7cb2-4b91-85df-ff2e01449a2e",
+                  "registrationDate": "2019-11-01T17:30:36.354Z",
+                  "customAttributes": {
+                      "serialNumber": "tl8n1234",
+                      "materialNumber": "m-56778"
+                  },
+                  "firmwares": [{
+                      "firmwareComponentId": "6df47567-a4fc-4b7e-b54f-3d873883ceaf",
+                      "firmwareComponentName": "myFirmwareComponentName",
+                      "firmwareVersionId": "40d0fb1a-1c10-4326-9e25-b82813d64f7f",
+                      "firmwareVersionName": "myFirmwareVersionId",
+                      "effectiveDate": "2019-11-02T17:30:36.354Z",
+                      "downloadedDate": "2019-11-01T17:30:36.354Z",
+                      "installedDate": null,
+                      "status": "downloaded"
+                  }],
+                  "iamAttributes": {                    
+                      "isActive": "true",
+                      "forTest": "true",
+                      "debugUntil": "2019-10-17T15:42:03.123Z",
+                      "deviceExtId": {
+                        "system": "https://idm-development.us-east.philips-healthsuite.com/",
+                        "value": "2ceb9c0c-d671-440e-acfd-98579b9a6981",
+                        "type": {
+                          "code": "device",
+                          "text": "type of deviceType1"
+                        }
+                      }
+                  }
+              }
+            ```
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Profile'
+
+      responses:
+        '201':
+          description: __OK.__ Created.
+          headers:
+            api-version:
+              type: integer              
+            content-type:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9=/-;]'
+            content-length:
+              type: integer
+              format: long
+            transactionId:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9-]'                  
+            ETag:
+              type: string
+              description: >-
+                Identifier for a specific version of a resource. Format 
+                W/{versionId}  where versionId is resource version. Example 
+                W/1. Due to API GW issue, at this moment only integers
+                provided.
+              minLength: 1
+              maxLength: 64
+            Last-Modified:
+              type: string
+              description: >-
+                Date and time at which the resource was last modified. Example
+                2017-08-04T07:30:56.847Z
+              minLength: 1
+              maxLength: 64    
+          schema:
+            $ref: '#/definitions/Profile'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '406':
+          $ref: '#/responses/406'
+        '409':
+          $ref: '#/responses/409'
+        '415':
+          $ref: '#/responses/415'
+        '500':
+          $ref: '#/responses/500'
+    get:
+      summary: Search profile by parameters.
+      description: >-
+        Search profile entries in the Connect Profile database based on single parameter (basic search) or multiple parameters (advanced search).
+        When searching on multiple parameters, it performs "AND" search. 
+        Valid search parameters are:
+          **• propositionGuid**
+          **• propositionName**
+          **• applicationGuid**
+          **• applicationName**
+          **• deviceGroupName**
+          **• deviceTypeName**
+          **• oauthClientId**
+          **• producingOrgGuid**
+          **• consumingOrgGuid**
+          **• hsdpId**
+          **• serialNo**
+          **• registrationDate**
+          **• deviceGroupId**
+          **• deviceTypeId**
+          **• loginId**
+          **• connection.status**
+          **• connection.lastUpdated**
+          **• customAttributes-any key/value pair**
+          **• firmwares.firmwareComponentId**
+          **• firmwares.firmwareComponentName**
+          **• firmwares.firmwareVersionId**
+          **• firmwares.firmwareVersionName**
+          **• firmwares.effectiveDate**
+          **• firmwares.downloadedDate**
+          **• firmwares.installedDate**
+          **• firmwares.status**
+          **• iamAttributes.isActive**
+          **• iamAttributes.forTest**
+          **• iamAttributes.debugUntil**
+          **• iamAttributes.deviceExtId.system**
+          **• iamAttributes.deviceExtId.value**
+          **• iamAttributes.deviceExtId.type.code**
+          **• iamAttributes.deviceExtId.type.text**
+          **• includeAdditionalAttributes-boolean indicating whether to include all basic attributes in the search result. default is false**
+          **• includeSubset-indicating which child objects are included in the search result, default is 0**
+          **• includeSubset=0 search result does not include any subset**
+          **• includeSubset=1 search result includes customAttributes subset**
+          **• includeSubset=1,2 search result includes customAttributes and latestConnectionStatus subsets**
+          **• includeSubset=3 search result includes connectionStatus history subsets**
+          **• includeSubset=1,4 search result includes customAttributes and latest firmware objects subsets**
+          **• includeSubset=4 search result includes latest firmware objects subsets**
+          **• includeSubset=1,2,4 search result includes customAttributes, latestConnectionStatus and latest firmware objects subsets**
+          **• includeSubset=5 search result includes IAM Attributes subsets**
+
+      tags:
+        - Profile
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/ContentType'
+        - $ref: '#/parameters/Accept'
+        - $ref: '#/parameters/APIVersion'
+        - $ref: '#/parameters/Authorization'
+        - name: SearchParam
+          in: query
+          description: >
+            Search by field and value.  Supported formats are:
+
+            **/connect/profile/Profile?hsdpId={hsdpId}&_count={pageSize}**
+
+            **/connect/profile/Profile?deviceTypeName:contains={deviceTypeName}&customAttributes.serialNumber={serialNumber}&includeSubset=1,2**
+          required: true
+          type: string
+        - name: _count
+          in: query
+          description: Maximum number of results to return in search
+          required: false
+          type: integer
+          default: 20
+          minimum: 1
+          maximum: 200
+        - name: _page
+          in: query
+          description: Support for pagination.  Return inputted page back to client
+          required: false
+          type: integer
+          default: 1
+      responses:
+        '200':
+          description: __OK.__
+          headers:
+            api-version:
+              type: integer              
+            content-type:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9=/-;]'
+            content-length:
+              type: integer
+              format: long
+            transactionId:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9-]'                  
+            ETag:
+              type: string
+              description: >-
+                Identifier for a specific version of a resource. Format 
+                W/{versionId}  where versionId is resource version. Example 
+                W/1. Due to API GW issue, at this moment only integers 
+                provided.
+              minLength: 1
+              maxLength: 64
+            Last-Modified:
+              type: string
+              description: >-
+                Date and time at which the resource was last modified. Example 
+                2017-08-04T07:30:56.847Z
+              minLength: 1
+              maxLength: 64    
+          schema:
+            $ref: '#/definitions/BundleOfProfileSearchResult'
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '406':
+          $ref: '#/responses/406'
+        '500':
+          $ref: '#/responses/500'
+  '/connect/profile/Profile/{id}':
+    get:
+      summary: Read profile by ID.
+      description: |
+        Read Profile by ID.
+      tags:
+        - Profile
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/ContentType'
+        - $ref: '#/parameters/Accept'
+        - $ref: '#/parameters/APIVersion'
+        - $ref: '#/parameters/Authorization'
+        - name: id
+          description: The identifier of the resource.
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: __OK.__
+          headers:
+            api-version:
+              type: integer              
+            content-type:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9=/-;]'
+            content-length:
+              type: integer
+              format: long
+            transactionId:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9-]'                  
+            ETag:
+              type: string
+              description: >-
+                Identifier for a specific version of a resource. Format 
+                W/{versionId}  where versionId is resource version. Example 
+                W/1. Due to API GW issue, at this moment only integers 
+                provided.
+              minLength: 1
+              maxLength: 64
+            Last-Modified:
+              type: string
+              description: >-
+                Date and time at which the resource was last modified. Example 
+                2017-08-04T07:30:56.847Z
+              minLength: 1
+              maxLength: 64    
+          schema:
+            $ref: '#/definitions/Profile'
+            
+        '400':
+          $ref: '#/responses/400'
+        '401':
+         $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '404':
+          $ref: '#/responses/404'
+        '406':
+          $ref: '#/responses/406'
+        '500':
+          $ref: '#/responses/500'
+    delete:
+      summary: Delete profile resource by ID.
+      description: |
+        Delete profile based on ID
+      tags:
+        - Profile
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/ContentType'
+        - $ref: '#/parameters/Accept'
+        - $ref: '#/parameters/APIVersion'
+        - $ref: '#/parameters/Authorization'
+        - name: id
+          description: The ID of the resource.
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: __OK.__Deleted
+          headers:
+            api-version:
+              type: integer              
+            content-type:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9=/-;]'
+            content-length:
+              type: integer
+              format: long
+            transactionId:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9-]'                  
+            ETag:
+              type: string
+              description: >-
+                Identifier for a specific version of a resource. Format 
+                W/{versionId}  where versionId is resource version. Example 
+                W/1. Due to API GW issue, at this moment only integers 
+                provided.
+              minLength: 1
+              maxLength: 64
+            Last-Modified:
+              type: string
+              description: >-
+                Date and time at which the resource was last modified. Example 
+                2017-08-04T07:30:56.847Z
+              minLength: 1
+              maxLength: 64    
+        '401':
+         $ref: '#/responses/401'
+        '405':
+          $ref: '#/responses/405'
+  /connect/profile/Profile/{id}/$update-customattributes:
+    put:
+      summary: Update the custom attributes for a profile
+      description: |
+        Update custom attributes for a given profile
+      tags:
+        - Profile
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/ContentType'
+        - $ref: '#/parameters/Accept'
+        - $ref: '#/parameters/APIVersion'
+        - $ref: '#/parameters/Authorization'
+        - $ref: '#/parameters/If-match'        
+        - name: id
+          description: The identifier of the resource.
+          in: path
+          required: true
+          type: string
+        - name: body
+          description: >
+            The custom attributes to update.
+
+            ```
+              {
+                "serialNumber": "tl8n1234",
+                "materialNumber": "m-56778",
+                "locatorKey": "12345"
+              }
+            ```
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CustomAttributes'
+      responses:
+        '200':
+          description: __OK.__ Updated.
+          headers:
+            api-version:
+              type: integer              
+            content-type:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9=/-;]'
+            content-length:
+              type: integer
+              format: long
+            transactionId:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9-]'                  
+            ETag:
+              type: string
+              description: >-
+                Identifier for a specific version of a resource. Format 
+                W/{versionId}  where versionId is resource version. Example 
+                W/1. Due to API GW issue, at this moment only integers 
+                provided.
+              minLength: 1
+              maxLength: 64
+            Last-Modified:
+              type: string
+              description: >-
+                Date and time at which the resource was last modified. Example 
+                2017-08-04T07:30:56.847Z
+              minLength: 1
+              maxLength: 64    
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '409':
+          $ref: '#/responses/409'
+        '412':
+          $ref: '#/responses/412'
+        '415':
+          $ref: '#/responses/415'
+        '422':
+          $ref: '#/responses/422'
+        '500':
+          $ref: '#/responses/500'
+  /connect/profile/Profile/{id}/$update-firmwares:
+    put:
+      summary: Update the firmware information for a profile
+      description: |
+        Add/update a firmware info for a given profile
+      tags:
+        - Profile
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/ContentType'
+        - $ref: '#/parameters/Accept'
+        - $ref: '#/parameters/APIVersion'
+        - $ref: '#/parameters/Authorization'
+        - $ref: '#/parameters/If-match'        
+        - name: id
+          description: The identifier of the resource.
+          in: path
+          required: true
+          type: string
+        - name: body
+          description: The firmware information to add/update.
+          
+            ```
+            [
+              {
+                "firmwareComponentId":"6df47567-a4fc-4b7e-b54f-3d873883ceaf",
+                "firmwareComponentName":"myFirmwareComponentName",
+                "firmwareVersionId":"40d0fb1a-1c10-4326-9e25-b82813d64f7f",
+                "firmwareVersionName":"myFirmwareVersionId",
+                "effectiveDate":"2019-11-02T17:30:36.354Z",
+                "downloadedDate":"2019-11-01T17:30:36.354Z",
+                "status":"downloaded"
+              }
+            ]
+            ```
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Firmwares'
+      responses:
+        '200':
+          description: __OK.__ Updated.
+          headers:
+            api-version:
+              type: integer              
+            content-type:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9=/-;]'
+            content-length:
+              type: integer
+              format: long
+            transactionId:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9-]'                  
+            ETag:
+              type: string
+              description: >-
+                Identifier for a specific version of a resource. Format 
+                W/{versionId}  where versionId is resource version. Example 
+                W/1. Due to API GW issue, at this moment only integers 
+                provided.
+              minLength: 1
+              maxLength: 64
+            Last-Modified:
+              type: string
+              description: >-
+                Date and time at which the resource was last modified. Example 
+                2017-08-04T07:30:56.847Z
+              minLength: 1
+              maxLength: 64    
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '409':
+          $ref: '#/responses/409'
+        '412':
+          $ref: '#/responses/412'
+        '415':
+          $ref: '#/responses/415'
+        '422':
+          $ref: '#/responses/422'
+        '500':
+          $ref: '#/responses/500'
+  /connect/profile/Profile/{id}/$update-iamattributes:
+    put:
+      summary: Update the IAM attributes for a profile
+      description: |
+        Add/update a IAM attributes info for a given profile
+      tags:
+        - Profile
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/ContentType'
+        - $ref: '#/parameters/Accept'
+        - $ref: '#/parameters/APIVersion'
+        - $ref: '#/parameters/Authorization'
+        - $ref: '#/parameters/If-match'        
+        - name: id
+          description: The identifier of the resource.
+          in: path
+          required: true
+          type: string
+        - name: body
+          description: The IAM attributes information to add/update.
+
+            ```
+              { 
+                "isActive":"true",
+                "forTest":"true",
+                "debugUntil":"2019-10-17T15:42:03.123Z",
+                "deviceExtId":{
+                  "system":"https://idm-development.us-east.philips-healthsuite.com/",
+                  "value":"2ceb9c0c-d671-440e-acfd-98579b9a6981",
+                  "type":{
+                    "code":"device",
+                    "text":"type of deviceType1"
+                  }
+                }
+              }
+            ```
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/IAMAttributes'
+      responses:
+        '200':
+          description: __OK.__ Updated.
+          headers:
+            api-version:
+              type: integer              
+            content-type:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9=/-;]'
+            content-length:
+              type: integer
+              format: long
+            transactionId:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9-]'                  
+            ETag:
+              type: string
+              description: >-
+                Identifier for a specific version of a resource. Format 
+                W/{versionId}  where versionId is resource version. Example 
+                W/1. Due to API GW issue, at this moment only integers 
+                provided.
+              minLength: 1
+              maxLength: 64
+            Last-Modified:
+              type: string
+              description: >-
+                Date and time at which the resource was last modified. Example 
+                2017-08-04T07:30:56.847Z
+              minLength: 1
+              maxLength: 64    
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '409':
+          $ref: '#/responses/409'
+        '412':
+          $ref: '#/responses/412'
+        '415':
+          $ref: '#/responses/415'
+        '422':
+          $ref: '#/responses/422'
+        '500':
+          $ref: '#/responses/500'
+  /connect/profile/Profile/{id}/$update-connectionstatus:
+    put:
+      summary: Update the connection status for a profile
+      description: |
+        This allows customer to manually update the connection status for a profile 
+      tags:
+        - Profile
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/ContentType'
+        - $ref: '#/parameters/Accept'
+        - $ref: '#/parameters/APIVersion'
+        - $ref: '#/parameters/Authorization'
+        - $ref: '#/parameters/If-match'        
+        - name: id
+          description: The identifier of the resource.
+          in: path
+          required: true
+          type: string
+        - name: body
+          description: The connection status to be updated.
+
+            ```
+              {
+                "status":"connected", - required
+                "lastUpdated":"2021-08-17T15:42:03.123Z" - optional
+              }
+            ```
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ConnectionStatus'
+      responses:
+        '200':
+          description: __OK.__ Updated.
+          headers:
+            api-version:
+              type: integer              
+            content-type:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9=/-;]'
+            content-length:
+              type: integer
+              format: long
+            transactionId:
+              type: string
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9-]'                  
+            ETag:
+              type: string
+              description: >-
+                Identifier for a specific version of a resource. Format 
+                W/{versionId}  where versionId is resource version. Example 
+                W/1. Only integers supported (per AWS API Gateway behavior as of 2021-10-25).
+              minLength: 1
+              maxLength: 64
+              x-valid-chars: '[a-zA-Z0-9-]'
+            Last-Modified:
+              type: string
+              description: >-
+                Date and time at which the resource was last modified. Example 
+                2017-08-04T07:30:56.847Z
+              minLength: 1
+              maxLength: 64    
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '403':
+          $ref: '#/responses/403'
+        '409':
+          $ref: '#/responses/409'
+        '412':
+          $ref: '#/responses/412'
+        '415':
+          $ref: '#/responses/415'
+        '422':
+          $ref: '#/responses/422'
+        '500':
+          $ref: '#/responses/500'
+definitions:
+  Profile:
+    title: Profile
+    type: object
+    required:
+      - serialNo
+      - HSDPId
+      - loginId
+      - identityType
+      - propositionName
+      - propositionGuid
+      - applicationName
+      - applicationGuid
+      - oAuthClientId
+      - oAuthClientName
+      - deviceGroupId
+      - deviceGroupName
+      - deviceTypeId
+      - deviceTypeName
+      - identitySignature
+      - producingOrgGuid
+      - consumingOrgGuid
+    properties:
+      resourceType:
+        type: string
+        default: Profile
+        enum:
+          - Profile
+      serialNo:
+        description: |
+          (client assigned) The serial number of the profile identity.
+        type: string
+        minLength: 1
+        maxLength: 32
+        x-valid-chars: '[a-zA-Z0-9-]'
+        readOnly: false
+      HSDPId:
+        description: |
+          (client assigned) The HSDPId of the profile identity.
+        type: string
+        minLength: 1
+        maxLength: 36
+        x-valid-chars: '[a-zA-Z0-9-]'
+        readOnly: false
+      loginId:
+        description: |
+          (client assigned) The login ID of the profile identity.
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+        readOnly: false
+      identityType:
+        description: >
+          (client assigned) The identity type (e.g. device) of the profile 
+          identity.
+        type: string
+        minLength: 1
+        maxLength: 32
+        x-valid-chars: '[a-zA-Z0-9-]'
+      propositionName:
+        description: >-
+          (client assigned) Name of the proposition.
+        type: string
+        minLength: 1
+        maxLength: 20
+        x-valid-chars: '[a-zA-Z0-9_.!*{}-]'
+      propositionGuid:
+        description: (client assigned) Specifies proposition UUID
+        type: string
+        minLength: 1
+        maxLength: 36
+        x-valid-chars: '[a-zA-Z0-9-]'
+      applicationName:
+        description: >-
+          (client assigned) Name of the Application.
+        type: string
+        minLength: 1
+        maxLength: 20
+        x-valid-chars: '[a-zA-Z0-9_.!*{}-]'
+      applicationGuid:
+        description: (client assigned) Specifies application UUID
+        type: string
+        minLength: 1
+        maxLength: 36
+        x-valid-chars: '[a-zA-Z0-9-]' 
+      oAuthClientId:
+        description: (client assigned) ID of the OAuthClient.
+        type: string
+        minLength: 1
+        maxLength: 36
+        x-valid-chars: '[a-zA-Z0-9_.!*{}-]' 
+      oAuthClientName:
+        description: >-
+          (client assigned) Name of the OAuth Client. Invalid Characters:-
+          "[$&+,@'\":;=?#|()\\[\\]<>]".
+        type: string
+        minLength: 5
+        maxLength: 50
+      deviceGroupId:
+        description: (client assigned) ID of the Device Group.
+        type: string
+        minLength: 1
+        maxLength: 36
+      deviceGroupName:
+        description: >-
+          (client assigned) Name of the Device Group.
+        type: string
+        minLength: 1
+        maxLength: 128
+        x-valid-chars: '[a-zA-Z0-9:_-]' 
+      deviceTypeId:
+        description: (client assigned) ID of the Device Type.
+        type: string
+        minLength: 1
+        maxLength: 36
+      deviceTypeName:
+        description: >-
+          (client assigned) Name of the Device Type.
+        type: string
+        minLength: 1
+        maxLength: 50
+        x-valid-chars: '[a-zA-Z0-9:_-]' 
+      identitySignature:
+        description: >
+          (client assigned) The The identity signature of the profile identity 
+          at time of provisioning.
+        type: string
+        minLength: 1
+        maxLength: 1024
+      producingOrgGuid:
+        description: |
+          (client assigned) The producing organization of the profile identity.
+        type: string
+        minLength: 1
+        maxLength: 36
+        x-valid-chars: '[a-zA-Z0-9-]'
+      consumingOrgGuid:
+        description: |
+          (client assigned) The consuming organization of the profile identity.
+        type: string
+        minLength: 1
+        maxLength: 36
+        x-valid-chars: '[a-zA-Z0-9-]'
+      registrationDate:
+        description: |
+          The device registration date.
+        type: string
+        format: date-time
+      createdBySource:
+        description: |
+          (system generated) Indicates the source of creation for the profile (can be either API or Notification).
+        type: string
+        readOnly: true
+      deviceTypeAttributes:
+        $ref: '#/definitions/DeviceTypeAttributes'
+      customAttributes:
+        $ref: '#/definitions/CustomAttributes'
+      connectionStatus:
+        $ref: '#/definitions/ConnectionStatus'
+      firmwares:
+        type: array
+        items:
+          $ref: '#/definitions/Firmware'
+      iamAttributes:
+        $ref: '#/definitions/IAMAttributes'        
+      meta:
+        $ref: '#/definitions/Meta'
+  ProfileSearchResult:
+    title: ProfileSearchResult
+    type: object
+    properties:
+      resourceType:
+        type: string
+        default: ProfileSearchResult
+        enum:
+          - ProfileSearchResult
+      hsdpid:
+        description: |
+          The HSDP ID associated with the profile.
+        type: string
+      serialNo:
+        description: |
+          The device serial number with the profile.
+        type: string
+      propositionName:
+        description: |
+          The proposition name the device is associated.
+        type: string
+      applicationName:
+        description: |
+          The application name the device is associated.
+        type: string
+      deviceGroupName:
+        description: |
+          The device group name the device is associated.
+        type: string
+      deviceTypeName:
+        description: |
+          The device type name the device is associated.
+        type: string
+      oAuthClientId:
+        description: |
+          The oAuthClientId for the device.
+        type: string
+      registrationDate:
+        description: |
+          The registration date for the profile.
+        type: string
+        format: date-time
+      isConnected:
+        description: |
+          Indicates whether the device is connected to IoT Gateway.
+        type: boolean
+      customAttributes:
+          $ref: '#/definitions/CustomAttributes'
+      connectionStatus:
+        description: |
+          Connection Status object that contains list of connection status.
+        type: array
+        items:
+          type: object
+          properties:
+            status:
+              type:  string
+            lastUpdated:
+              type: string
+      firmwares:
+        description: |
+          Array of latest firmware objects for the profile.
+        type: array
+        items:
+          $ref: '#/definitions/Firmware'
+      iamAttributes:
+        $ref: '#/definitions/IAMAttributes'        
+      meta:
+        $ref: '#/definitions/Meta'
+  ConnectionStatus:
+    title:  ConnectionStatus
+    type:  object
+    required:
+      - status
+    properties:
+      status:
+        type:  string
+        enum:  
+          - connected
+          - disconnected
+      lastUpdated:
+        description: The date and time the resource was created. In ISO 8601 (UTC) format.
+        type: string
+        format: date-time
+  CustomAttributes:
+    title: CustomAttributes
+    description: >-
+      (client assigned) A collection of custom attributes corresponding to a 
+      profile. The collection of custom attributes are represented as a JSON object 
+      with key value pairs. The max length for each key is 32. The max length for 
+      each value is 256. The CustomAttributes JSON object total max length is 65536(64K).
+    type: object
+    maxLength: 65536
+    additionalProperties:
+      properties:
+        key:
+          type: string
+          minLength: 1
+          maxLength: 32
+          x-valid-chars: '[a-zA-Z0-9=.-_?$:/#%~()*!@^&, ]'
+        value:
+          type: string
+          minLength: 1
+          maxLength: 256
+          x-valid-chars: '[a-zA-Z0-9=.-_?$:/#%~()*!@^&, ]'
+    example:
+      'key1': 'value1'
+      'key2': 'value2 - up to value maxLength'
+      'key3 - Custom Name up to key maxLength': 'value3'
+
+  Firmware:
+    title: Firmware
+    type: object
+    required:
+      - firmwareComponentId
+      - firmwareComponentName
+      - firmwareVersionId
+      - firmwareVersionName
+      - effectiveDate
+      - status
+    properties:
+      firmwareComponentId:
+        description: |
+          firmware component Id.
+        type: string
+        minLength: 1
+        maxLength: 36
+        x-valid-chars: '[a-zA-Z0-9-]'
+        readOnly: false
+      firmwareComponentName:
+        description: |
+          The name of firmware component
+        type: string
+        minLength: 1
+        maxLength: 255
+        x-valid-chars: '[a-zA-Z0-9_.*{}:!-]'
+      firmwareVersionId:
+        description: |
+          firmware component version Id.
+        type: string
+        minLength: 1
+        maxLength: 36
+        x-valid-chars: '[a-zA-Z0-9-]'
+        readOnly: false
+      firmwareVersionName:
+        description: |
+          The name of firmware component version
+        type: string
+        minLength: 1
+        maxLength: 20
+        x-valid-chars: '[a-zA-Z0-9_.:!/-]'
+      effectiveDate:
+        description: The date and time the firmware take effect. In ISO 8601 (UTC) format.
+        type: string
+        format: date-time
+      downloadedDate:
+        description: The date and time the firmware is downloaded. In ISO 8601 (UTC) format.
+        type: string
+        format: date-time
+      installedDate:
+        description: The date and time the firmware is installed. In ISO 8601 (UTC) format.
+        type: string
+        format: date-time
+      status:
+        description: Current status for the firmware. e.g. downloaded, installed, etc.
+        type: string
+        minLength: 1
+        maxLength: 64
+        x-valid-chars: '[a-zA-Z0-9-]'
+      lastUpdatedDate:
+        description: The date and time the record is updated. In ISO 8601 (UTC) format.
+        type: string
+        format: date-time
+
+  Firmwares:
+    title: Firmwares
+    type: array
+    items:
+      $ref: '#/definitions/Firmware'
+
+  IAMAttributes:
+    title: IAMAttributes
+    type: object
+    required:
+      - deviceExtId
+    properties:
+      isActive:
+        description: |
+          Flag indicating whether this device is blocked for all platform access.
+        type: boolean
+      forTest:
+        description: |
+          A flag indicating this device is presently in use for testing purposes.
+        type: boolean
+      debugUntil:
+        description: |
+          Indicates the date and time more detailed debug information is requested to continue for this device. Used in consumer care scenarios.
+        type: string
+        format: date-time
+      deviceExtId:
+        description: |	
+          A string that is associated with a single object or entity within a given system. Typically, identifiers are used to connect content in resources to external content available in other frameworks or protocols.
+        type: object
+        properties:
+          system:
+            description: |
+              The namespace for the identifier.
+            type: string
+            minLength: 1
+            maxLength: 250
+            x-invalid-chars: '[&+@''";=?#|()\[\]<>]'
+          value:
+            description: |
+              The value that is unique (within the given system/namespace).
+            type: string
+            minLength: 1
+            maxLength: 250
+            x-invalid-chars: '[&+@''";=?#|()\[\]<>]'
+          type:
+            description: |
+              type of IAM attributes
+            type: object
+            properties:
+              code:
+                description: |
+                  Internal error code defined by the system.
+                type: string
+                minLength: 1
+                maxLength: 10
+                x-invalid-chars: '[&+@''";=?#|()\[\]<>]'
+              text:
+                description: |
+                  Plain text representation of the error.
+                type: string
+                minLength: 1
+                maxLength: 250
+                x-invalid-chars: '[&+@''";=?#|()\[\]<>]'
+
+  DeviceTypeAttributes:
+    title: DeviceTypeAttributes
+    description: >-
+      (from MDM) A collection of custom attributes for the device type.
+      This set of data is retrieved from the MDM and thus is read-only for profile service user.
+    type: object
+    readOnly: true
+    additionalProperties:
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    example:
+      'key1': 'value1'
+      'key2': 'value2'
+
+  BundleOfProfileSearchResult:
+    title: BundleOfProfileSearchResult
+    description: >-
+      A container for a collection of resources. Calculating the page parameter
+      yourself is not allowed. Please use the Previous and Next links as
+      described in the following link. <a
+      href="https://www.hl7.org/fhir/http.html#paging">https://www.hl7.org/fhir/http.html#paging</a>.
+    type: object
+    required:
+      - resourceType
+      - type
+    properties:
+      resourceType:
+        type: string
+        default: Bundle
+        enum:
+          - Bundle
+      type:
+        type: string
+        enum:
+          - searchset
+      total:
+        description: >-
+          This is the total number of matches for the search (as opposed to the
+          number of results in this bundle).
+        type: integer
+      link:
+        description: >-
+          Links related to this Bundle, e.g 'next' and 'previous' to page
+          through results.
+        type: array
+        items:
+          $ref: '#/definitions/Link'
+      entry:
+        type: array
+        items:
+          title: Bundle Entry
+          description: An entry in a bundle.
+          type: object
+          properties:
+            fullUrl:
+              description: full url for the resource
+              type: string
+            resource:
+              $ref: '#/definitions/ProfileSearchResult'
+  Resource:
+    title: Resource
+    description: Base class for all resources.
+    type: object
+    properties:
+      resourceType:
+        description: The type of the resource.
+        type: string
+        maxLength: 64
+      id:
+        description: The logical ID of the resource.
+        type: string
+        maxLength: 64
+      meta:
+        $ref: '#/definitions/Meta'
+  Meta:
+    title: Meta
+    type: object
+    description: Metadata about a resource.
+    properties:
+      lastUpdated:
+        description: The date and time the resource was created. In ISO 8601 (UTC) format.
+        type: string
+        format: date-time
+      versionId:
+        description: >-
+          Version ID of the resource. Representation of this value in ETag
+          should be W/"versionId" where versionId for MDM is an integer.
+        type: string
+        maxLength: 64
+  CodeableConcept:
+    title: CodeableConcept
+    description: Concept - reference to a terminology or just text.
+    properties:
+      text:
+        type: string
+        maxLength: 256
+  Issue:
+    title: Issue
+    type: object
+    description: >-
+      An error, warning or information message that results from a system
+      action.
+    required:
+      - severity
+      - code
+    properties:
+      severity:
+        description: The severity level of the issue.
+        type: string
+        enum:
+          - fatal
+          - error
+          - warning
+          - information
+      code:
+        description: Error or warning code.
+        type: string
+        enum:
+          - invalid
+          - processing
+          - timeout
+      details:
+        $ref: '#/definitions/CodeableConcept'
+      diagnostics:
+        description: >-
+          Additional diagnostic information about the issue. Must not be used in
+          production environment.
+        type: string
+        maxLength: 256
+  OperationOutcome:
+    title: OperationOutcome
+    description: >-
+      A collection of error, warning or information messages that result from a
+      system action. Returned only in case of an API call failure.
+    type: object
+    required:
+      - resourceType
+      - issue
+    properties:
+      resourceType:
+        type: string
+        enum:
+          - OperationOutcome
+      issue:
+        type: array
+        items:
+          $ref: '#/definitions/Issue'
+  Reference:
+    title: Reference
+    description: >-
+      Reference to another resource. This is either a local path
+      (`/Profile/12346fffeabcdef`) or a full URL
+      (`https://api.hsdp.com/Profile/12346fffeabcdef`).
+    type: object
+    properties:
+      reference:
+        description: The URL to another resource.
+        type: string
+        maxLength: 1024
+      display:
+        description: Optional display name for the reference.
+        type: string
+        maxLength: 256
+  Identifier:
+    title: Identifier
+    description: >-
+      A string that is associated with a single object or entity within a given
+      system. Typically, identifiers are used to connect content in resources to
+      external content available in other frameworks or protocols. In the data
+      store, system and value are concatenated with a pipe '|'.
+    type: object
+    properties:
+      system:
+        description: The namespace for the identifier.
+        type: string
+        maxLength: 128
+      value:
+        description: The value that is unique (within the given system/namespace).
+        type: string
+        maxLength: 128
+  Link:
+    title: Link
+    type: object
+    required:
+      - relation
+      - url
+    properties:
+      relation:
+        type: string
+      url:
+        type: string
+  
