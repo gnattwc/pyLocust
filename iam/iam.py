@@ -7,7 +7,7 @@ class Iam:
         self.accessToken = None
 
     def getAccessToken(self):
-        self.logger.info("Iam:getAccessToken")
+        self.logger.info("*** Iam:getAccessToken")
         try:
             if self.accessToken is None:
                 self.accessToken = self.iamsvc.getAccessToken()
