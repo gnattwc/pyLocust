@@ -1,14 +1,10 @@
-import requests
-
+from expects import *
 class ProvisioningSvc:
-    def __init__(self, url:str, token:str):
+    def __init__(self, url:str, client):
         self.url = url
-        self.token = token
+        self.client = client
 
-    def set_token(self, token:str):
-        self.token = token
-
-    def unprovision(self, hsdp_id:str) -> bool:
+    def unprovision(self, token:str, hsdp_id:str) -> bool:
         obj = {
             "resourceType": "Identity",
             "identifier": {
@@ -20,11 +16,11 @@ class ProvisioningSvc:
         print(payload)
         headers = {
             "api-version": "1",
-            'authorization': f"Bearer {self.token}",
+            'authorization': f"Bearer {token}",
             'Accept': "application/json"
         }
-        response = requests.request(
-            "POST", self.url, data=payload, headers=headers)
+        response = self.client.post(
+            self.url, data=payload, headers=headers)
 
-        print(response.json())
-        return response.status_code == 204
+        expect(response.status_code).to(be(204))
+        return response.json()

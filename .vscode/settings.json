@@ -4,5 +4,5 @@
         "titleBar.activeBackground": "#242C84",
         "titleBar.activeForeground": "#FAFAFE"
     },
-    "python.pythonPath": "C:\\Users\\CTang\\Anaconda3\\python.exe"
+    "python.pythonPath": "C:\\Users\\CTang\\Anaconda3\\envs\\locustTest\\python.exe"
 }

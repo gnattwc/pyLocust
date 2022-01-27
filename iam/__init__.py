@@ -1,1 +1,2 @@
-from .gettoken import getAccessToken
+# from .iamsvc import IamSvc
+from .iam import Iam

@@ -1,1 +1,1 @@
-from .profile import ProfileSvc
+from profilesvc.profilesvc import ProfileSvc
