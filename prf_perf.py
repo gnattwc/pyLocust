@@ -1,3 +1,4 @@
+import os
 import random
 from typing import ClassVar
 from locust import HttpUser, task, events, between
@@ -14,13 +15,16 @@ from threading import Lock
 @events.init_command_line_parser.add_listener
 def _(parser):
     parser.add_argument("--path-to-config", type=str, env_var="LOCUST_PATH_TO_CONFIG",
-                        help="path to deploy config file")
+                        default="", help="path to deploy config file")
     # default="deployconfig/deploy_config_test.json", help="path to deploy config file")
 
 
 @events.test_start.add_listener
 def _(environment, **kw):
-    print("Deploy Config: %s" % environment.parsed_options.path_to_config)
+    path_to_config = environment.parsed_options.path_to_config
+    print("Deploy Config: %s" % path_to_config)
+    # config = Config(path_to_config)
+    # environment = config['profileUrl']
 
 
 class BasePerfUser(HttpUser):
@@ -28,20 +32,22 @@ class BasePerfUser(HttpUser):
         self.config = Config(self.environment.parsed_options.path_to_config)
         logging.basicConfig(stream=sys.stdout,
                             encoding='utf-8', level=logging.INFO)
-        self.logger = logging.getLogger("LifeCycleUser")
+        self.logger = logging.getLogger(os.path.basename(__file__))
+        iamUrl = self.config["iamUrl"]
+        profileUrl = self.config["profileUrl"]
 
-        self.iam = Iam(self.config["iamUrl"], self.client,
+        self.iam = Iam(iamUrl, self.client,
                        self.config["accessTokenCreds"], self.logger)
-        self.psvc = ProfileSvc(
-            self.config["profileUrl"], self.client, self.logger)
+        self.psvc = ProfileSvc(profileUrl, self.client, self.logger)
         self.factory = ProfileFactory(
             self.client, self.iam, self.psvc, self.config['smokeDeviceTH'], self.logger)
+        self.profile = None
 
 
 class CreateOnlyUser(BasePerfUser):
     @task
     def onlyCreate(self):
-        p: Profile = self.factory.createNewProfile()
+        self.profile = self.factory.createNewProfile()
 
 
 class ReadOnlyUser(BasePerfUser):
@@ -50,14 +56,14 @@ class ReadOnlyUser(BasePerfUser):
 
     def find_read_targets(self):
         # thead safety
-        ReadOnly.lock.acquire()
-        if ReadOnly.read_targets is None:
-            p: Profile = self.factory.createBlankProfile()
-            data = p.search(
+        ReadOnlyUser.lock.acquire()
+        if ReadOnlyUser.read_targets is None:
+            self.profile = self.factory.createBlankProfile()
+            data = self.profile.search(
                 [f"devicetypename={self.config['smokeDeviceType']}", f"_count={100}"])
-            ReadOnly.read_targets = list(e['resource']['hsdpId']
-                                        for e in data['entry'])
-        ReadOnly.lock.release()
+            ReadOnlyUser.read_targets = list(e['resource']['hsdpId']
+                                             for e in data['entry'])
+        ReadOnlyUser.lock.release()
 
     def on_start(self):
         super().on_start()
@@ -65,19 +71,25 @@ class ReadOnlyUser(BasePerfUser):
 
     @task
     def onlyRead(self):
-        hsdp_id = random.choice(ReadOnly.read_targets)
-        p: Profile = self.factory.createFromExistingProfile(hsdp_id)
+        hsdp_id = random.choice(ReadOnlyUser.read_targets)
+        self.profile = self.factory.createFromExistingProfile(hsdp_id)
 
 
 class CreateReadDeleteUser(BasePerfUser):
+    def on_stop(self):
+        self.profile.delete()
+
     @task
-    def onlyCreate(self):
-        p: Profile = self.factory.createNewProfile()
-        p.refreshData()
-        p.delete()
+    def createReadDelete(self):
+        self.profile = Profile = self.factory.createNewProfile()
+        self.profile.refreshData()
+        self.profile.delete()
 
 
 class LifeCycleUser(BasePerfUser):
+    def on_stop(self):
+        self.profile.delete()
+
     @task
     def lifecycle(self):
         p: Profile = self.factory.createNewProfile()

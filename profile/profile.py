@@ -32,9 +32,10 @@ class Profile(DictBase):
         return self.prf.searchProfileById(self._getToken(), hsdp_id)
 
     def delete(self):
-        self.prf.deleteProfileById(self._getToken(), self.hsdp_id)
-        self.hsdp_id = None
-        self._dict = {}
+        if self.hsdp_id is not None:
+            self.prf.deleteProfileById(self._getToken(), self.hsdp_id)
+            self.hsdp_id = None
+            self._dict = {}
 
     @catch_exception(AssertionError)
     def updateCustomAttributes(self, custom_attributes):
