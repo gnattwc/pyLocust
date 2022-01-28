@@ -1,0 +1,23 @@
+{
+  "name": "connect_control_smoke_test",
+  "version": "1.2.0",
+  "description": "Deployment smoke test for ConnectControl",
+  "package-lock": false,
+  "main": "ConnectControlSmoke.js",
+  "dependencies": {
+    "aws-iot-device-sdk": "^2.2.11",
+    "aws-sdk": "^2.908.0",
+    "columnify": "^1.5.4",
+    "debug": "^4.1.0",
+    "eslint": "^8.6.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "jsonwebtoken": "^8.4.0",
+    "node-rsa": "^1.0.0",
+    "request": "^2.81.0",
+    "sort-object": "^3.0.3"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {}
+}
