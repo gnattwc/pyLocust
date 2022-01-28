@@ -81,7 +81,7 @@ class CreateReadDeleteUser(BasePerfUser):
 
     @task
     def createReadDelete(self):
-        self.profile = Profile = self.factory.createNewProfile()
+        self.profile = self.factory.createNewProfile()
         self.profile.refreshData()
         self.profile.delete()
 
