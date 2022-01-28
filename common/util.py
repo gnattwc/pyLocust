@@ -1,4 +1,4 @@
-import logging
+import logging, json
 
 def catch_exception(exception=Exception, logger=logging.getLogger(__name__)):
     def deco(func):
@@ -11,3 +11,7 @@ def catch_exception(exception=Exception, logger=logging.getLogger(__name__)):
                 return result
         return wrapper
     return deco
+
+@staticmethod
+def prettyPrint( obj):
+    return json.dumps(obj, indent=4)

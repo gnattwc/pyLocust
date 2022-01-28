@@ -1,3 +1,5 @@
+import random
+from typing import ClassVar
 from locust import HttpUser, task, events, between
 from deployconfig import Config
 from iam import Iam
@@ -6,12 +8,14 @@ from profile import Profile, ProfileFactory
 import logging
 import sys
 import time
+from threading import Lock
 
 
 @events.init_command_line_parser.add_listener
 def _(parser):
     parser.add_argument("--path-to-config", type=str, env_var="LOCUST_PATH_TO_CONFIG",
-                        default="deployconfig/deploy_config_test.json", help="path to deploy config file")
+                        help="path to deploy config file")
+    # default="deployconfig/deploy_config_test.json", help="path to deploy config file")
 
 
 @events.test_start.add_listener
@@ -19,11 +23,11 @@ def _(environment, **kw):
     print("Deploy Config: %s" % environment.parsed_options.path_to_config)
 
 
-class LifeCycleUser(HttpUser):
+class BasePerfUser(HttpUser):
     def on_start(self):
         self.config = Config(self.environment.parsed_options.path_to_config)
         logging.basicConfig(stream=sys.stdout,
-                            encoding='utf-8', level=logging.ERROR)
+                            encoding='utf-8', level=logging.INFO)
         self.logger = logging.getLogger("LifeCycleUser")
 
         self.iam = Iam(self.config["iamUrl"], self.client,
@@ -33,6 +37,47 @@ class LifeCycleUser(HttpUser):
         self.factory = ProfileFactory(
             self.client, self.iam, self.psvc, self.config['smokeDeviceTH'], self.logger)
 
+
+class CreateOnlyUser(BasePerfUser):
+    @task
+    def onlyCreate(self):
+        p: Profile = self.factory.createNewProfile()
+
+
+class ReadOnlyUser(BasePerfUser):
+    lock = Lock()
+    read_targets = None
+
+    def find_read_targets(self):
+        # thead safety
+        ReadOnly.lock.acquire()
+        if ReadOnly.read_targets is None:
+            p: Profile = self.factory.createBlankProfile()
+            data = p.search(
+                [f"devicetypename={self.config['smokeDeviceType']}", f"_count={100}"])
+            ReadOnly.read_targets = list(e['resource']['hsdpId']
+                                        for e in data['entry'])
+        ReadOnly.lock.release()
+
+    def on_start(self):
+        super().on_start()
+        self.find_read_targets()
+
+    @task
+    def onlyRead(self):
+        hsdp_id = random.choice(ReadOnly.read_targets)
+        p: Profile = self.factory.createFromExistingProfile(hsdp_id)
+
+
+class CreateReadDeleteUser(BasePerfUser):
+    @task
+    def onlyCreate(self):
+        p: Profile = self.factory.createNewProfile()
+        p.refreshData()
+        p.delete()
+
+
+class LifeCycleUser(BasePerfUser):
     @task
     def lifecycle(self):
         p: Profile = self.factory.createNewProfile()
@@ -57,13 +102,12 @@ class LifeCycleUser(HttpUser):
             }
         ])
         time.sleep(1)
-        # p.updateConnectionStatus({"status": "connected"})
+        p.updateConnectionStatus({"status": "connected"})
+        time.sleep(1)
+        # p.searchById( p['HSDPId'])
         # time.sleep(1)
-        p.searchById( p.hsdp_id)
+        p.search(
+            [f"devicetypename={self.config['smokeDeviceType']}", f"_count=10"])
         time.sleep(1)
-        p.advSearch([f"devicetypename={self.config['smokeDeviceType']}",f"_count=10"])
+        p.delete()
         time.sleep(1)
-        p.deleteProfile()
-        time.sleep(1)
-
-    # wait_time = between(0.5, 2)

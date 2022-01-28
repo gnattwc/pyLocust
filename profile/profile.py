@@ -1,7 +1,7 @@
-from sqlite3 import connect
 from common.dict_base import DictBase
 from iam import Iam
 from profilesvc import ProfileSvc
+from common.util import catch_exception
 
 class Profile(DictBase):
     def __init__(self, client, iamsvc: Iam, profilesvc: ProfileSvc, device_th, logger, hsdp_id: str = None):
@@ -23,37 +23,39 @@ class Profile(DictBase):
             self._getToken(), self.device_th, hsdp_id)
         self.hsdp_id = hsdp_id
 
+    @catch_exception(AssertionError)
     def search(self, searchTerms: list[str]):
         return self.prf.searchProfile(self._getToken(), searchTerms)
 
-    def searchById(self, hsdp_id):
+    @catch_exception(AssertionError)
+    def searchById(self, hsdp_id:str):
         return self.prf.searchProfileById(self._getToken(), hsdp_id)
 
-    def deleteProfile(self):
+    def delete(self):
         self.prf.deleteProfileById(self._getToken(), self.hsdp_id)
         self.hsdp_id = None
         self._dict = {}
 
+    @catch_exception(AssertionError)
     def updateCustomAttributes(self, custom_attributes):
-        etag = self._get_etag()
         self.prf.updateProfileCustomAttributes(
-            self._getToken(), self.hsdp_id, custom_attributes, etag)
+            self._getToken(), self.hsdp_id, custom_attributes, self._get_etag())
         self._dict['customAttributes'] = custom_attributes
-        self._update_etag(etag+1)
+        self._update_etag(self._get_etag()+1)
 
+    @catch_exception(AssertionError)
     def updateFirmwares(self, firmware_attributes):
-        etag = self._get_etag()
         self.prf.updateProfileFirmwares(
-            self._getToken(), self.hsdp_id, firmware_attributes, etag)
+            self._getToken(), self.hsdp_id, firmware_attributes, self._get_etag())
         self._dict['firmwares'] = firmware_attributes
-        self._update_etag(etag+1)
+        self._update_etag(self._get_etag()+1)
 
+    @catch_exception(AssertionError)
     def updateConnectionStatus(self, connection_status):
-        etag = self._get_etag()
         resp = self.prf.updateConnectionStatus(
-            self._getToken(), self.hsdp_id, connection_status, etag)
+            self._getToken(), self.hsdp_id, connection_status, self._get_etag())
         self._dict['connectionStatus'] = connection_status
-        self._update_etag(etag+1)
+        self._update_etag(self._get_etag()+1)
         return resp
 
     def getData(self):

@@ -1,5 +1,5 @@
+import random
 from .profile import Profile
-import uuid
 import logging
 import datetime
 
@@ -11,15 +11,16 @@ class ProfileFactory:
         self.device_th = device_th
         self.logger = logger
 
-    def createEmptyProfile(self):
+    def createBlankProfile(self):
         p = Profile( self.client, self.iam, self.prf, self.device_th, self.logger)
         return p
 
-    def createNewProfile(self):
+    def createNewProfile(self, prefix="hsdpIdLocust"):
         p = Profile( self.client, self.iam, self.prf, self.device_th, self.logger)
         # hsdp_id = uuid.uuid4()
         now = datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')
-        new_hsdp_id = f"hsdpIdLocust{now}"
+        rand = random.randint(0,10000)
+        new_hsdp_id = f"{prefix}{now}{rand}"
         p.createNewProfile( new_hsdp_id)
         return p
 

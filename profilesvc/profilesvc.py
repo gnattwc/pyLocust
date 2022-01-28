@@ -1,6 +1,5 @@
 from expects import *
 
-
 class ProfileSvc:
     """Profile service calls encapsulation"""
 
@@ -13,13 +12,14 @@ class ProfileSvc:
         allQuery = "&".join(query)
         all = "?" + allQuery if allQuery else allQuery
         url = f"{self.url}/connect/profile/Profile{all}"
-        self.logger.info('*** searchProfileByHsdpId url=%s' % (url))
+        self.logger.info('*** searchProfile url=%s' % (url))
         payload = ""
         headers = self._build_headers(token)
         response = self.client.get(
             url, data=payload, headers=headers
             , name="advSearchProfile"
         )
+        self.logger.debug((response))
         expect(response.status_code).to(be(200))
         return response.json()
 
@@ -30,6 +30,7 @@ class ProfileSvc:
         headers = self._build_headers(token)
         response = self.client.get(
             url, data=payload, headers=headers, name="searchProfileById")
+        self.logger.debug(response)
         expect(response.status_code).to(be(200))
         return response.json()
 
@@ -78,6 +79,7 @@ class ProfileSvc:
         )
         expect(response.status_code).to(be(200))
         data = response.json()
+        self.logger.debug((response))
         expect(data['HSDPId']).to(equal(hsdp_id))
         return data
 
@@ -87,6 +89,7 @@ class ProfileSvc:
         headers = self._build_headers(token)
         response = self.client.delete(
             url, headers=headers, name="deleteProfile")
+        self.logger.debug((response))
         expect(response.status_code).to(be(200))
 
     def updateProfileCustomAttributes(self, token, hsdp_id, custom_attributes, etag_version):
@@ -99,6 +102,7 @@ class ProfileSvc:
             url, headers=headers, data=str(custom_attributes)
             , name="updateProfileCustomAttributes"
         )
+        self.logger.debug((response))
         expect(response.status_code).to(be(200))
 
     def updateProfileFirmwares(self, token, hsdp_id, firmware_attributes, etag_version):
@@ -111,6 +115,7 @@ class ProfileSvc:
             url, headers=headers, data=str(firmware_attributes)
             , name="updateProfileFirmwares"
             )
+        self.logger.debug((response))
         expect(response.status_code).to(be(200))
 
     def updateConnectionStatus(self, token, hsdp_id, connection_status, etag_version):
@@ -123,8 +128,9 @@ class ProfileSvc:
             url, headers=headers, data=str(connection_status)
             , name="updateConnectionStatus"
             )
+        self.logger.debug((response))
         expect(response.status_code).to(be(200))
-        return response.json()
+        # return response.json()
 
     @staticmethod
     def _build_headers(token, etag_version=None, api_version=2):
